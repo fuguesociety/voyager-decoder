@@ -1,0 +1,26 @@
+# Emojicode v1.1
+import struct
+class EmojiSong:
+    def __init__(self):
+        self.code_points = {}
+    def add_emoji(self, emoji, rhythm, chords):
+        code_point = ord(emoji.encode('utf-8').hex()[0:10], 16)
+        self.code_points[code_point] = {'rhythm': rhythm, 'chords': chords}
+    def generate_song(self):
+        song = []
+        for code_point in self.code_points:
+            bytes = struct.unpack('4B', code_point.to_bytes(4, 'big'))
+            song.append({'bytes': bytes, 
+                         'rhythm': self.code_points[code_point]['rhythm'], 
+                         'chords': self.code_points[code_point]['chords']})
+        return song
+    def play_song(self, song):
+        for track in song:
+            print(f"Bytes: {track['bytes']}, Rhythm: {track['rhythm']}, Chords: {track['chords']}")
+# Example usage:
+song = EmojiSong()
+song.add_emoji('😎', 'Jazz', ['C', 'G', 'Am'])
+song.add_emoji('❤️', 'Upbeat', ['G', 'D', 'Em'])
+song.add_emoji('☹️', 'Slow', ['Am', 'F', 'G'])
+generated_song = song.generate_song()
+song.play_song(generated_song)
